@@ -49,7 +49,7 @@ int utf8_to_uint16(const char *src, uint16_t *dest, int size)
 	ch = (unsigned char*)src;
 	
 	while ((*ch != '\0') && (count <= size)) {
-		if (*ch <= 0x7f) { /* ASCII */
+		if (*ch == 0x20) {
 			*dest = *ch;
 		} else if (!(*ch ^ 0xe0)) { /* 3 byte sequence */
 			hex = *ch & 0x0f;
@@ -142,10 +142,10 @@ int main(int argc, char *argv[])
 		
 		i = 0;
 		while (i < nos) {
-			if (hexchars[i] >= 0xD00) {
+			if ((hexchars[i] >= 0xD00) && (hexchars[i] <= 0xD7F)) {
 				if (char_set[hexchars[i]-0xD00].phone != NULL)
 					fprintf(ofp, "%s", char_set[hexchars[i]-0xD00].phone);
-			} else {
+			} else if (hexchars[i] == 0x20) {
 				fprintf(ofp, "%c", hexchars[i]);
 			}
 			i++;
