@@ -78,7 +78,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = pallavi_ml2p$(EXEEXT)
+bin_PROGRAMS = pallavi_ml2p$(EXEEXT) pallavi_mltxt2words$(EXEEXT)
 subdir = .
 DIST_COMMON = INSTALL NEWS README AUTHORS ChangeLog \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
@@ -104,6 +104,9 @@ AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+am_pallavi_mltxt2words_OBJECTS = src/ml_texttowordfreq.$(OBJEXT)
+pallavi_mltxt2words_OBJECTS = $(am_pallavi_mltxt2words_OBJECTS)
+pallavi_mltxt2words_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -138,8 +141,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(pallavi_ml2p_SOURCES)
-DIST_SOURCES = $(pallavi_ml2p_SOURCES)
+SOURCES = $(pallavi_ml2p_SOURCES) $(pallavi_mltxt2words_SOURCES)
+DIST_SOURCES = $(pallavi_ml2p_SOURCES) $(pallavi_mltxt2words_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -307,6 +310,7 @@ AM_CPPFLAGS = -Isrc/ -Wall
 pallavi_ml2p_SOURCES = src/ml_transliterate.c \
 				   src/ml_phonetable.c
 
+pallavi_mltxt2words_SOURCES = src/ml_texttowordfreq.c
 all: all-am
 
 .SUFFIXES:
@@ -408,6 +412,12 @@ src/ml_phonetable.$(OBJEXT): src/$(am__dirstamp) \
 pallavi_ml2p$(EXEEXT): $(pallavi_ml2p_OBJECTS) $(pallavi_ml2p_DEPENDENCIES) $(EXTRA_pallavi_ml2p_DEPENDENCIES) 
 	@rm -f pallavi_ml2p$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(pallavi_ml2p_OBJECTS) $(pallavi_ml2p_LDADD) $(LIBS)
+src/ml_texttowordfreq.$(OBJEXT): src/$(am__dirstamp) \
+	src/$(DEPDIR)/$(am__dirstamp)
+
+pallavi_mltxt2words$(EXEEXT): $(pallavi_mltxt2words_OBJECTS) $(pallavi_mltxt2words_DEPENDENCIES) $(EXTRA_pallavi_mltxt2words_DEPENDENCIES) 
+	@rm -f pallavi_mltxt2words$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(pallavi_mltxt2words_OBJECTS) $(pallavi_mltxt2words_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -417,6 +427,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/ml_phonetable.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/ml_texttowordfreq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/ml_transliterate.Po@am__quote@
 
 .c.o:
