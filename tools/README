@@ -1,0 +1,50 @@
+Pallavi Tools Documentation
+===============================
+
+Tools section of the Pallavi project contains various tools for making Malayalam
+language model for Automated Speech Recognition easier. Tool set is primarily
+for creating the language model. For creating accoustic models, the modelling
+tools that comes with the ASR library shall be used (Julius, CMU Sphinx etc).
+
+Utilities Included
+===============================
+
+pallavi_ml2p
+-------------------------------
+This program is used for converting the text in UTF-8 encoded Malayalam language
+to phones based text. This is basically a transliteration and maps text in to 
+phones. The resulting files would have an extension .trans and contains words
+transliterated from the input text files on which a transliteration was 
+applicable. Non Malayalam words in input files would be ignored.
+
+Usage: pallavi_ml2p <infile1> [infile2] ..
+
+Atleast one input text file should be provided. A number of file names can also
+be provided for transliteration. If the input file name is input1, input2 etc,
+corresponding transliterated files would be named as input1.trans and 
+input2.trans. 
+
+Eg: pallavi_ml2p text1.txt text2.txt 
+    pallavi_ml2p * (For all the files in current directory)
+    
+A help message would be displayed if the program is run with no arguments.
+
+pallavi_mltxt2wordlist
+--------------------------
+This program is for converting the transliterated word files in to a word list
+file that can be used for the next step, which is creating a dictionary. A list
+of all unique words in all the input files would be crated and dumped to a 
+specified/default output file. The .trans files created by pallavi_ml2p would
+be the recommended input for pallavi_mltxt2wordlist. 
+
+Usage: pallavi_mltxt2wordlist <infile1> [infile2] .. [-o/--output outfile]
+
+Atleast one input file must be provided. An output file can be specified using
+-o or --output option. If no output file name is specified, a default filename
+words.list would be created in the current directory.
+
+Eg: pallavi_mltxt2wordlist text1.trans text2.trans --output words.list
+    pallavi_mltxt2wordlist *.trans -o words.list
+    pallavi_mltxt2wordlist *.trans
+
+A help message would be displayed if the program is run with no arguments.
