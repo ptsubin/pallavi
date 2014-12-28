@@ -71,65 +71,11 @@ int utf8_to_uint16(const char *src, uint16_t *dest, int size)
 	return count;
 }
 
-/**
- * print_help() shows a help message */
-void print_help(char *argv[], char opt)
+void transliterate_one_fp(FILE *ifp, FILE *ofp)
 {
-	switch (opt) {
-		case 0:
-		case 'h': printf("\n\tUsage: %s <infile>\n\n", argv[0]);
-				break;
-		default: printf("\n\tInvalid option %c", opt);
-			    printf("\n\tUse %s -h for help\n\n", argv[0]);
-	}
-
-	printf("\t%s takes an input file in UTF8 encoding and generates", argv[0]);
-	printf("\n\ta .trans file with the UTF8 characters replaced with phonems");
-	printf("\n\tas per the Malayalam characters-phonems mapping. This");
-	printf("\n\tprogram will not work for languages other than Malayalam");
-	printf("\n\tand file encodings other than UTF8.\n\n");
-}
-
-int main(int argc, char *argv[])
-{
-	char buf[1024];
+	char buf[1024], *nl = NULL;
 	uint16_t hexchars[1024];
-	FILE *ifp = NULL, *ofp = NULL;
 	int nos = 0, i;
-	char *nl, *outfile = NULL;
-
-	if (argc != 2) {
-		print_help(argv, 0);
-		return -1;
-	}
-
-	if (argv[1][0] == '-') {
-		print_help(argv, argv[1][1]);
-		return 0;
-	}
-
-	strncpy(buf, argv[1], sizeof(buf));
-	nl = strchr(buf, '.');
-	if ((nl != NULL) && (*nl == '.'))
-		*nl = '\0';
-	strncat(buf, ".trans", sizeof(buf) - strlen(argv[1]));
-	outfile = strdup(buf);
-	if (outfile == NULL) {
-		printf("Memory allocation error\n");
-		return -2;
-	}
-
-	ifp = fopen(argv[1], "r");
-	if (ifp == NULL) {
-		perror(argv[1]);
-		goto cleanup;
-	}
-
-	ofp = fopen(outfile, "w");
-	if (ofp == NULL) {
-		perror(outfile);
-		goto cleanup;
-	}
 
 	while (fgets(buf, sizeof(buf), ifp) != NULL) {
 		nl = strchr(buf, '\n');
@@ -155,14 +101,70 @@ int main(int argc, char *argv[])
 			fprintf(ofp, "\n");
 		}
 	}
-	
+
+	fflush(ofp);
+	fclose(ifp);
+	fclose(ofp);
+}
+
+void print_help(char *progname)
+{
+	printf("\n\tUsage: %s <infile1> [infile2] .. \n\n", progname);
+
+	printf("%s takes input files in UTF8 encoding and generates\n", progname);
+	printf("a .trans file with the UTF8 characters replaced with phonems\n"
+		"as per the Malayalam characters-phonems mapping. This\n"
+		"program will not work for languages other than Malayalam\n"
+		"and file encodings other than UTF8.\n\n"
+	);
+}
+
+int main(int argc, char *argv[])
+{
+	FILE *ifp = NULL, *ofp = NULL;
+	char *outfile = NULL, buf[128], *dot = NULL;
+	int args = 1;
+
+	if (argc < 2) {
+		print_help(argv[0]);
+		return -1;
+	}
+
+	while (args < argc) {
+		strncpy(buf, argv[args], sizeof(buf));
+		dot = strchr(buf, '.');
+		if ((dot != NULL) && (*dot == '.'))
+			*dot = '\0';
+		strncat(buf, ".trans", sizeof(buf) - strlen(argv[args]));
+		outfile = strdup(buf);
+		if (outfile == NULL) {
+			printf("Memory allocation error\n");
+			args++;
+			continue;
+		}
+
+		ifp = fopen(argv[args], "r");
+		if (ifp == NULL) {
+			perror(argv[args]);
+			goto cleanup;
+		}
+
+		ofp = fopen(outfile, "w");
+		if (ofp == NULL) {
+			perror(outfile);
+			fclose(ifp);
+			goto cleanup;
+		}
+
+		printf("Processing input file %s. Output file is %s\n", 
+				argv[args], outfile);
+
+		transliterate_one_fp(ifp, ofp);
 cleanup:
-	if (ifp)
-		fclose(ifp);
-	if (ofp)
-		fclose(ofp);
-	if (outfile)
-		free(outfile);
+		if (outfile)
+			free(outfile);
+		args++;
+	}
 
 	return 0;
 }
