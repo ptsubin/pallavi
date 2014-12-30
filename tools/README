@@ -6,6 +6,19 @@ language model for Automated Speech Recognition easier. Tool set is primarily
 for creating the language model. For creating accoustic models, the modelling
 tools that comes with the ASR library shall be used (Julius, CMU Sphinx etc).
 
+Building from Source
+===============================
+Once the source code is downloaded and extracted, use the following commands to
+setup the initial configure scripts.
+$ ./bootstrap
+And then the usual
+$ ./configure
+$ make
+$ sudo make install
+
+Once bootstrap script is run, refer INSTALL file for detailed instructions and
+options available with ./configure
+
 Utilities Included
 ===============================
 
@@ -48,3 +61,41 @@ Eg: pallavi_mltxt2wordlist text1.trans text2.trans --output words.list
     pallavi_mltxt2wordlist *.trans
 
 A help message would be displayed if the program is run with no arguments.
+
+pallavi_mldictgen
+--------------------------
+This program is for generating a dictionary file from a word list file generated
+by pallavi_mltxt2wordlist. This dictionary file will be used by the ASR libs
+for translating speech to words.
+
+Usage: pallavi_mldictgen --wordlist(-w) <word list> --dict(-d) <dict file>
+
+An input wordlist file must be specified with --wordlist or -w option. Output
+file name should be specified by --dict or -d option. Both these arguments are 
+mandatory.
+
+Eg: pallavi_mldictgen --wordlist words.list --dict words.dic
+
+A help message would be displayed if the program is run with incorrect number or
+wrong arguments.
+
+Language Dictionary Generation
+===============================
+Collect a lot of Malayalam text that would contain many different words. One 
+file or many files with a recommended .txt extension. Keep the files in a single
+directory and run
+
+$ pallavi_ml2p *.txt
+
+This will generate a .trans file for each ,txt file. Now run,
+
+$ pallavi_mltxt2wordlist *.trans
+
+This will generate a default output word list in default output file words.list
+
+$ pallavi_mldictgen -w words.list -d words.dic
+
+words.dic file now contains a dictionary file to be used with ASR libraries. Use
+$ wc -l words.list 
+to find out the number of words in the dictionary.
+

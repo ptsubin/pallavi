@@ -1,5 +1,6 @@
-# 
-# Makefile.am
+#!/bin/bash
+#
+# bootstrap
 #
 # Copyright 2014 Pallavi Project <pallavi.malayalam@gmail.com>
 # 
@@ -19,20 +20,6 @@
 # MA 02110-1301, USA.
 #
 
-ACLOCAL_AMFLAGS = -I m4
-AUTOMAKE_OPTIONS = subdir-objects
-
-# Enable debugging symbols and no ignore warnings
-AM_CPPFLAGS = -Isrc/ -Wall -g -Werror
-
-bin_PROGRAMS = pallavi_ml2p \
-			pallavi_mltxt2wordlist \
-			pallavi_mldictgen
-
-pallavi_ml2p_SOURCES = src/ml_transliterate.c \
-				   src/ml_phonetable.c
-
-pallavi_mltxt2wordlist_SOURCES = src/ml_texttowordlist.c
-
-pallavi_mldictgen_SOURCES = src/ml_dictionarygen.c
+autoreconf -if
+automake --force-missing --add-missing
 
