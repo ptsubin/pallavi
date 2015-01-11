@@ -30,14 +30,14 @@ char *phones_of_3[] = {
 };
 
 char *phones_of_2[] = {
-	"eh", "hq", "aa", "ii", "uu", "rq", "lx", "ei", "ai", "oo", "au", "kh",
+	"hq", "aa", "ii", "uu", "rq", "lx", "ei", "ai", "oo", "au", "kh",
 	"gh", "ng", "ch", "jh", "nj", "tx", "dh", "nx", "th", "dh", "ph", "bh",
 	"rx", "lx", "zh", "sh", "sx", "aa", "ii", "uu", "rq", "ei", "ai", "oo",
 	"au", "au", "nq", "rq", "lq"
 };
 
 char *phones_of_1[] = {
-	"m", "a", "i", "u", "e", "o", "k", "g", "c", "j", "t", "d", "n", "p",
+	"q", "a", "i", "u", "e", "o", "k", "g", "c", "j", "t", "d", "n", "p",
 	"b", "m", "y", "r", "l", "w", "s", "h", "i",	"u", "e", "o"
 };
 
@@ -64,8 +64,7 @@ char *check_for_phone(char *phone)
 			   phoneset = (char**)phones_of_3;
 			   break;
 
-		default:printf("Invalid length: %d\n", len); 
-			   return NULL;
+		default: return NULL;
 	}
 
 	while (i < nelm) {
@@ -112,6 +111,11 @@ void process_list_file(FILE *ifp, FILE *ofp)
 					fprintf(ofp, "%s ", phone);
 					break;
 				} else {
+					if (len == 1) {
+						printf("Error translating: '%s'\n", buffer);
+						printf("Missing phone is: '%s'\n", phone);
+						break;
+					}
 					phone[len-1] = '\0';
 				}
 			}

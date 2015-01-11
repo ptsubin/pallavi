@@ -46,11 +46,17 @@ int utf8_to_uint16(const char *src, uint16_t *dest, int size)
 	int count = 0;
 	unsigned char *ch;
 
+	/* We take all symbols and non malayalam characters and translate them in
+	 * to one space. Ignore the rest of the sequence if more than one character
+	 * To be decided on what to do with the numbers */
+	int seq_flag = 0;
+
 	ch = (unsigned char*)src;
-	
+
 	while ((*ch != '\0') && (count <= size)) {
-		if (*ch == 0x20) {
-			*dest = *ch;
+		if ((*ch < 128U) && (!seq_flag)) {
+			*dest = ' ';
+			seq_flag = 1;
 		} else if (!(*ch ^ 0xe0)) { /* 3 byte sequence */
 			hex = *ch & 0x0f;
 			ch++;
@@ -58,6 +64,7 @@ int utf8_to_uint16(const char *src, uint16_t *dest, int size)
 			ch++;
 			hex = (hex << 6) | (*ch & 0x3f);
 			*dest = hex;
+			seq_flag = 0;
 		} else {
 			ch++;
 			continue;

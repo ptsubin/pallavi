@@ -27,9 +27,9 @@
 /* Malayalam unicode character to phonems map */
 struct phone_map char_set[128] = {
 	{0x0D00, NULL, SYM},
-	{0x0D01, "eh", SYM},
-	{0x0D02, "m", SYM},
-	{0x0D03, "hq", SYM},
+	{0x0D01, NULL, SYM},
+	{0x0D02, "q", SYM},
+	{0x0D03, NULL, SYM},
 	{0x0D04, NULL,SYM},
 	{0x0D05, "a", SCHWA},
 	{0x0D06, "aa", VOW},
